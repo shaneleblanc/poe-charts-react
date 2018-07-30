@@ -1,4 +1,4 @@
-# PoE Currency grid
+# PoE Currency Charts (React Powered)
 A bar graph of the most current currency values in Chaos Orbs and Exalted Orbs (the most commonly traded forms of currency, chaos may as well be the dollar of PoE).  Upon mousing over the bar items, the nearest whole trade possible will be shown (e.g. Fusing at 1.75:1c = 7 fusing for 4 chaos), followed by the trade price for 10 Chaos Orbs, followed by the Exalted Orb price (calculated from the Exalted Orb cost in Chaos Orbs).
 
 ## How it works:
@@ -8,9 +8,9 @@ A bar graph of the most current currency values in Chaos Orbs and Exalted Orbs (
 - The graph is produced using mostly Javascript DOM manipulation and CSS grid.
 
 ## TODO:
-- Add React
+- Add React (in progress)
 - More dimensions, more options
-- Better CSS Styling
+- Better CSS Styling (+ add user options)
 - Fix the smaller bars more by resizing the icons as well
 - Select different leagues (Incursion, Incursion Hardcore, Standard) [Done]
 - Switch chart to Horizontal? (or, fit text correctly in small vertical bars at the end?)

@@ -1,0 +1,174 @@
+:root {
+  --color-bg: rgba(21, 8, 17, 1);
+  --color-barbg: rgba(38, 8, 28, 1);
+  --color-light: rgba(12, 186, 186, 1);
+  --color-medium: rgba(1, 186, 239, 1);
+  --color-dark: rgba(56, 0, 54, 1);
+  --color-bar: #593b68;
+  --color-bar2: #79518e;
+  --color-red1: #7E4564;
+  --color-red2: #501635;
+  --color-red3: #632A49;
+  --color-whitered: #BB90A8;
+  --page-spacing: 0px;
+}
+@font-face {
+    font-family: 'Fontin SmallCaps';
+    src: url('fonts/Fontin-SmallCaps.woff2') format('woff2'),
+        url('fonts/Fontin-SmallCaps.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+  margin: 0;
+  background-color: var(--color-bg);
+}
+
+button {
+  display: inline-block;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: var(--color-red2);
+  color: var(--color-whitered);
+  border-radius: 1px;
+  border: 1px solid #ffffff;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.button[disabled], button[disabled], input[type="submit"][disabled], input[type="reset"][disabled], input[type="button"][disabled] {
+    cursor: default;
+    opacity: .5;
+  }
+.button:focus, .button:hover, button:focus, button:hover, input[type="submit"]:focus, input[type="submit"]:hover, input[type="reset"]:focus, input[type="reset"]:hover, input[type="button"]:focus, input[type="button"]:hover {
+    background-color: #c9c9c9;
+    background-color: #2aa198;
+  color: #002b36;
+    outline: 0;
+  }
+
+
+
+.BarGraph {
+  grid-row: 2;
+  display: grid;
+  background-color: var(--color-barbg);
+  margin-left: var(--page-spacing);
+  grid-template-columns: repeat(40, 1fr);
+  grid-template-rows: 1;
+  grid-gap: 5px;
+  height: 80vh;
+  width: auto;
+  align-items: flex-end;
+  position: relative;
+  word-wrap: break-word;
+  border-bottom-style: groove;
+  border-bottom-color: var(--color-red1);
+
+}
+
+.BarGraph-bar {
+  font-family: "Fontin SmallCaps";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  width: 75px;
+  border-radius: 5px 5px 0 0;
+  transition: transform 0.5s, filter 0.5s;
+  color: var(--color-medium);
+  z-index: 1;
+}
+.BarGraph-bar-small {
+  font-family: "Fontin SmallCaps";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  width: 75px;
+  border-radius: 5px 5px 0 0;
+  transition: transform 0.5s, filter 0.5s;
+  color: var(--color-medium);
+  z-index: 1;
+}
+.info {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1;
+  grid-template-rows: auto;
+}
+.infoline {
+  display: flex;
+
+  align-items: center;
+  vertical-align: middle;
+}
+.nav {
+  color: var(--color-light);
+}
+.container {
+  display: grid;
+  grid-template-rows: 3;
+  grid-template-columns: 1;
+align-content: space-between;
+  align-self: center;
+}
+.img {
+  vertical-align: middle;
+}
+.hidden {
+  display: hidden;
+  visibility: hidden;
+}
+[class^="BarGraph-bar"]:nth-child(even){
+  background-color: var(--color-bar);
+}
+[class^="BarGraph-bar"]:nth-child(odd){
+  background-color: var(--color-bar2);
+}
+[id$="-info"] {
+  align-content: center;
+  text-align: center;
+}
+.BarGraph-bar:hover {
+  filter: brightness(1.25);
+  position: relative;
+  left: 0;
+  width: 200px;
+  z-index: 10;
+  transition: width 0s;
+  transform: translate3d(0px, 0px, 0px);
+}
+.BarGraph-bar-small:hover {
+  filter: brightness(1.25);
+  position: relative;
+  left: 0;
+  width: 200px;
+  height: +100px;
+  z-index: 10;
+  transition: width 0s;
+  transform: translate3d(0px, 0px, 0px);
+}
+#navbar {
+  display: grid;
+  grid-template-columns: 2;
+  grid-template-rows: 1;
+}
+#title {
+  font-size: 24px;
+  font-family: "Fontin SmallCaps";
+  display: block;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#underneath {
+  height: 200px;
+  grid-row: 3;
+  z-index: 0;
+}
