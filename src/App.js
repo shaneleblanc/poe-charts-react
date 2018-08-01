@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
 import logo from './logo.svg';
 import './App.css';
 import './site.css';
+import chaosIcon from './img/chaosIcon.png';
+import exaltIcon from './img/exaltIcon.png';
 
 class App extends Component {
   state = {
@@ -36,7 +39,6 @@ class App extends Component {
         console.log("It didn't work...", err);
       });
   }
-
   parseData = (data) => {
     let result = [];
     let equivs = data.lines.map(item => item.chaosEquivalent);
@@ -47,17 +49,14 @@ class App extends Component {
     for(let item of data.lines){
       let worth = (1 / item.chaosEquivalent).toFixed(2);
       let nearestTrade = this.nearestWholeTrade(item.chaosEquivalent);
-      console.log(nearestTrade[0]);
       worth = (worth % 1 === 0) ? parseFloat(worth).toFixed(0) : worth;
-      console.log(data);
-      console.log('trying',item);
       result.push({
         name: item.currencyTypeName,
         chaosEquivalent: item.chaosEquivalent,
         worth: worth,
         nearestWholeTrade0: nearestTrade[0],
         nearestWholeTrade1: nearestTrade[1],
-        height: this.scaleRange(item.chaosEquivalent) + '%',
+        height: this.scaleRange(item.chaosEquivalent, this.state.scaleValue) + '%',
         icon: data.currencyDetails[data.currencyDetails.findIndex(currency => currency.name === item.currencyTypeName)].icon
       })
     }
@@ -66,7 +65,7 @@ class App extends Component {
                      worth: 1,
                      nearestWholeTrade0: 1,
                      nearestWholeTrade1: 1,
-                     height: this.scaleRange(1) + '%',
+                     height: this.scaleRange(1, this.state.scaleValue) + '%',
                      icon: data.currencyDetails[0].icon});
 
     return result;
@@ -87,15 +86,31 @@ class App extends Component {
     result.push(multiplier);
     return result;
   }
-  scaleRange = (value) => { //Scales Number in Range r1 to Number in Range r2
-      let r1 = [0, this.state.scaleValue];
+  scaleRange = (valueToScale, maxInRange) => { //Scales Number in Range r1 to Number in Range r2
+      let r1 = [0, maxInRange];
       let r2 = [0, 100];
-      return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+      return ( valueToScale - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
   }
+  removeBarItem = (itemName) => {
+      let newRates = this.state.currency.slice();
+      let removeIndex = newRates.findIndex(item => item.name === itemName);
+      console.log("removing",newRates[removeIndex].name)
+      newRates.splice(removeIndex, 1);
+      let equivs = newRates.map(item => item.chaosEquivalent);
+      let scaleValue = Math.max(...equivs);
 
+      for(let item of newRates){
+          item.height = this.scaleRange(item.chaosEquivalent, scaleValue)+'%';
+      }
+      this.setState({currency: newRates,
+      scaleValue: scaleValue,
+      })
+
+  }
   componentDidMount() {
 
     this.updateData();
+
   }
   render() {
     return (
@@ -120,11 +135,12 @@ class App extends Component {
         {this.state.currency.map(item =>
 
           (<div className="BarGraph-bar" key={item.name} style={{height : item.height}}>
-          <div className="infoline">{item.name} <br /> {item.worth}:1c <img src={item.icon} alt={item.name} /> </div>
-        <div className="infoline">{item.nearestWholeTrade1} <img src={item.icon} width="32" height="32" /> = {item.nearestWholeTrade0} <img src={this.state.currency[0].icon} width="32" height="32" /></div> <br />
-          <div className="infoline">10 <img src={this.state.currency[0].icon} width="32" height="32" /> = {Math.round(10 / item.chaosEquivalent)} <img src={item.icon} width="32" height="32" /></div> <br />
-          <div className="infoline">1&nbsp;&nbsp; <img src={this.state.exaltIcon} width="32" height="32" /> = {Math.round(this.state.exaltPrice * item.worth)} <img src={item.icon} width="32" height="32" /></div>
-          </div>
+          <div className="BarGraph-bar-title">{item.name} <br /> {item.worth}:1c <img src={item.icon} alt={item.name} /> </div>
+          <div className="BarGraph-bar-info">{item.nearestWholeTrade1} <img src={item.icon} width="32" height="32" /> = {item.nearestWholeTrade0} <img src={chaosIcon} width="32" height="32" /></div>
+          <div className="BarGraph-bar-info">10 <img src={chaosIcon} width="32" height="32" /> = {Math.round(10 / item.chaosEquivalent)} <img src={item.icon} width="32" height="32" /></div>
+          <div className="BarGraph-bar-info">1&nbsp;&nbsp; <img src={exaltIcon} width="32" height="32" /> = {Math.round(this.state.exaltPrice * item.worth)} <img src={item.icon} width="32" height="32" /></div>
+                  <div className="BarGraph-bar-info"><Button color="info" onClick={()=>{this.removeBarItem(item.name)}}>Remove</Button></div>
+              </div>
       ))}
 
       </div>
