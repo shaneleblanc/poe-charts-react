@@ -1,27 +1,36 @@
 import React from 'react';
-import DropDown from '../DropDown/DropDown.js';
+import Select from 'react-select';
+import chroma from 'chroma-js';
+import './Nav.css';
+
+const dot = (color = '#ccc') => ({
+    alignItems: 'center',
+    display: 'flex',
+
+    ':before': {
+        backgroundColor: color,
+        borderRadius: 10,
+        content: ' ',
+        display: 'block',
+        marginRight: 8,
+        height: 10,
+        width: 10,
+    },
+});
 
 const Nav = props => (
         <div className="nav" id="navbar">
             <div id="title">
                 <a id="league-title">{props.title}</a>
-
-                <span>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div id="nav--select-container">
                     Change League:
-                    <DropDown
-                        data={props.leagues.map(league => league.name)}
-                        onToggle=""
-                        optionSelected=""
-                        isOpen={props.dropDownOpen}
-                        onSelect=""
+                    <Select
+                      classNamePrefix="nav--select"
+                      options={props.leagues}
+                      onChange={(newval) => {props.switchLeague(newval)}}
                     />
-                    <select id="league" onChange={props.onChange}>
-                    {props.leagues.map(league => (
-                        <option value={league.value} selected={props.selected === league.value}>{league.name}</option>
-                    ))}
-                </select>
-                </span>
+
             </div>
         </div>
     );

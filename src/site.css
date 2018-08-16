@@ -25,9 +25,7 @@ html, body {
   background-color: var(--color-bg);
 }
 
-.nav {
-  color: var(--color-light);
-}
+
 .container {
   display: grid;
   grid-template-rows: 3;
@@ -41,19 +39,6 @@ align-content: space-between;
 .hidden {
   display: hidden;
   visibility: hidden;
-}
-
-#navbar {
-  display: grid;
-  grid-template-columns: 2;
-  grid-template-rows: 1;
-}
-#title {
-  font-size: 24px;
-  font-family: "Fontin SmallCaps";
-  display: block;
-  grid-column: 1;
-  grid-row: 1;
 }
 
 #underneath {

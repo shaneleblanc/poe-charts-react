@@ -1,0 +1,34 @@
+.nav {
+    color: var(--color-light);
+}
+
+#navbar {
+    display: grid;
+    grid-template-columns: 2;
+    grid-template-rows: 1;
+}
+
+.nav--select {
+    background-color: black;
+}
+
+#title {
+    font-size: 24px;
+    width: 400px;
+    font-family: "Fontin SmallCaps";
+    color: white;
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#nav--select-container {
+    display: block;
+    width: 250px;
+    z-index: 100;
+    align-content: baseline;
+    position: fixed;
+    left: 50vw;
+    grid-column: 2;
+    grid-row: 1;
+}

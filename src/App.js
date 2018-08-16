@@ -7,10 +7,14 @@ import chaosIcon from './img/chaosIcon.png';
 import exaltIcon from './img/exaltIcon.png';
 import Nav from './components/Nav/Nav.js';
 import BarChart from './components/BarChart/BarChart.js';
+import { Route, Switch, Link } from 'react-router-dom';
+import leaguesFile from './data/leagues.json';
+
 
 class App extends Component {
     state = {
-        currency: [],
+        currencyAboveOne: [],
+        currencyBelowOne: [],
         leagues: [],
         selectedLeague: {name: "Hardcore Incursion", value: "Hardcore%20Incursion"},
         exaltPrice: 60,
@@ -19,19 +23,21 @@ class App extends Component {
     }
 
     updateLeagues = () => {
-        let result;
-        fetch('/data/leagues.json')
-          .then(response => response.json())
-          .then(data => result = data)
-          .then(() => {
-              this.setState({
-                  leagues: result,
-              })
-          })
-          .catch(err => console.error(err));
+        // fetch('./leagues.json')
+        //   .then(response => JSON.parse(JSON.stringify(response.body.valueOf())))
+        //   .then(result => {
+        //       console.log('got leagues',result)
+        //       this.setState({
+        //           leagues: result,
+        //       })
+        //   })
+        //   .catch(err => console.error(err));
+        this.setState({
+            leagues: JSON.parse(JSON.stringify(leaguesFile))
+        })
     }
     updateData = () => {
-        console.log("updating data", this.state.league);
+        console.log("updating data", this.state.selectedLeague.label);
         let result;
 
         //fetch(`https://cors-anywhere.herokuapp.com/http://poe.ninja/api/data/currencyoverview?league=${this.state.selectedLeague.value}?type=Currency`,{"X-Requested-With": 'XMLHTTPRequest'})
@@ -39,55 +45,82 @@ class App extends Component {
           .then(response => response.json())
           .then(data => result = data)
           .then(() => {
-              this.setState({
-                  currency: this.parseData(result),
-                  exaltIcon: "http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToRare.png?scale=1&w=1&h=1",
+              this.parseData(result);
 
-              });
-              console.log('We have data:', this.state.currency)
+              console.log('We have data:', this.state.currencyBelowOne);
+          })
+          .then(() => {
               this.render();
           })
           .catch(err => {
-              console.log("League:", this.state.selectedLeague.name);
+              console.log("League:", this.state.selectedLeague.label);
               console.log("It didn't work...", err);
           });
     }
 
     parseData = (data) => {
         let result = [];
-        let equivs = data.lines.map(item => item.chaosEquivalent);
+        let overOneChaos = [];
+        let belowOneChaos = [];
+
+        let equivsOverOne = data.lines
+          .filter(item => item.chaosEquivalent > 1)
+          .map(item => item.chaosEquivalent);
         this.setState({
-            scaleValue: Math.max(...equivs),
+            scaleValue: Math.max(...equivsOverOne),
             exaltPrice: data.lines[data.lines.findIndex(currency => currency.currencyTypeName === 'Exalted Orb')].chaosEquivalent,
         });
+
         for (let item of data.lines) {
             let worth = (1 / item.chaosEquivalent).toFixed(2);
             let nearestTrade = this.nearestWholeTrade(item.chaosEquivalent);
             worth = (worth % 1 === 0) ? parseFloat(worth).toFixed(0) : worth;
-            result.push({
-                name: item.currencyTypeName,
-                chaosEquivalent: item.chaosEquivalent,
-                worth: worth,
-                nearestWholeTrade0: nearestTrade[0],
-                nearestWholeTrade1: nearestTrade[1],
-                height: this.scaleRange(item.chaosEquivalent, this.state.scaleValue) + '%',
-                icon: data.currencyDetails[data.currencyDetails.findIndex(currency => currency.name === item.currencyTypeName)].icon
-            })
+            if(item.chaosEquivalent > 1) {
+                overOneChaos.push({
+                    name: item.currencyTypeName,
+                    chaosEquivalent: item.chaosEquivalent,
+                    worth: worth,
+                    nearestWholeTrade0: nearestTrade[0],
+                    nearestWholeTrade1: nearestTrade[1],
+                    height: this.scaleRange(item.chaosEquivalent, this.state.scaleValue) + '%',
+                    icon: data.currencyDetails[data.currencyDetails.findIndex(currency => currency.name === item.currencyTypeName)].icon
+                })
+            } else {
+                belowOneChaos.push({
+                    name: item.currencyTypeName,
+                    chaosEquivalent: item.chaosEquivalent,
+                    worth: worth,
+                    nearestWholeTrade0: nearestTrade[0],
+                    nearestWholeTrade1: nearestTrade[1],
+                    height: this.scaleRange(item.chaosEquivalent, 1) + '%',
+                    icon: data.currencyDetails[data.currencyDetails.findIndex(currency => currency.name === item.currencyTypeName)].icon
+                })
+            }
         }
-        result.unshift({
+        belowOneChaos.unshift({
             name: 'Chaos Orb',
             chaosEquivalent: 1,
             worth: 1,
             nearestWholeTrade0: 1,
             nearestWholeTrade1: 1,
-            height: this.scaleRange(1, this.state.scaleValue) + '%',
+            height: this.scaleRange(1, 1) + '%',
             icon: data.currencyDetails[0].icon
         });
+        this.setState({
+            currencyAboveOne: overOneChaos,
+            currencyBelowOne: belowOneChaos,
+            exaltIcon: "http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToRare.png?scale=1&w=1&h=1",
 
+        });
         return result;
     }
-    switchLeague = () => {
 
+    switchLeague = (league) => {
+        console.log('switching to league',league.label);
+        this.setState({
+            selectedLeague: league,
+        })
+        this.updateData();
     }
 
     scaleRange = (valueToScale, maxInRange) => { //Scales Number in Range r1 to Number in Range r2
@@ -136,10 +169,20 @@ class App extends Component {
     render() {
         return (
           <div className="container">
-              <Nav leagues={this.state.leagues}
-                   title={`Path of Exile Currency Rates in ${this.state.selectedLeague.name}`}/>
+              <Nav
+                leagues={this.state.leagues}
+                switchLeague={(league) => this.switchLeague(league)}
+                title={`Path of Exile Currency Rates in ${this.state.selectedLeague.label}`}
+              />
               <BarChart
-                currency={this.state.currency}
+                currency={this.state.currencyBelowOne}
+                removeBar={(name) => this.removeBarItem(name)}
+                scaleValue={1}
+                exaltPrice={this.state.exaltPrice}
+              />
+              <div>Currency Above 1 Chaos</div>
+              <BarChart
+                currency={this.state.currencyAboveOne}
                 removeBar={(name) => this.removeBarItem(name)}
                 scaleValue={this.state.scaleValue}
                 exaltPrice={this.state.exaltPrice}

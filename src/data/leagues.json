@@ -1,26 +1,26 @@
 [
     {
-      name: "Incursion Hardcore",
-      value: "Hardcore%20Incursion",
+      "label": "Incursion Hardcore",
+      "value": "Hardcore%20Incursion"
     },
     {
-      name: "Incursion",
-      value: "Incursion",
+      "label": "Incursion",
+      "value": "Incursion"
     },
     {
-      name: "Standard",
-      value: "Standard",
+      "label": "Standard",
+      "value": "Standard"
     },
     {
-      name: "Hardcore",
-      value: "Hardcore",
+      "label": "Hardcore",
+      "value": "Hardcore"
     },
     {
-      name: "Incursion Flashback Hardcore",
-      value: "Incursion%20Event%20HC%20(IRE002)",
+      "label": "Incursion Flashback Hardcore",
+      "value": "Incursion%20Event%20HC%20(IRE002)"
     },
     {
-      name: "Incursion Flashback",
-      value: "Incursion%20Event%20(IRE001)",
+      "label": "Incursion Flashback",
+      "value": "Incursion%20Event%20(IRE001)"
     }
-]
+  ]
